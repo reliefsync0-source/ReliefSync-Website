@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ReliefSync – Offline-first disaster response coordination</title>
+  <meta name="description" content="ReliefSync is an offline-first disaster-response coordination platform for LGUs, DRRMOs, and relief partners." />
+
+  <!-- Font: Inter (same as the Figma design) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- =====================================================================
+     ICONS (inline SVG sprite). Used as: <svg class="ic"><use href="#i-wifi"/></svg>
+     These are stand-in icons. To use your exact Figma icons, export them
+     as SVG into /images/icons and swap the <svg> tags for <img> tags.
+     ===================================================================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M12 20h.01M8.5 16.43a5 5 0 0 1 7 0M2 8.82a15 15 0 0 1 4.17-2.65M10.66 5c4.01-.36 8.14.9 11.34 3.76M16.85 11.25a10 10 0 0 1 2.22 1.68M5 13a10 10 0 0 1 5.24-2.76M2 2l20 20"/></symbol>
+  <symbol id="i-sat" viewBox="0 0 24 24"><path d="M4 10a7.31 7.31 0 0 0 10 10ZM9 15l3-3M17 13a6 6 0 0 0-6-6M21 13A10 10 0 0 0 11 3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4 12 14.01l-3-3"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8M3 3v5h5M3 12a9 9 0 0 0 15 6.7L21 16M16 16h5v5"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></symbol>
+  <symbol id="i-gh" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4M9 18c-4.51 2-5-2-7-2"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16zM3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="i-merge" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01"/></symbol>
+</svg>
+
+
+<!-- =====================================================================
+     NAVIGATION
+     ===================================================================== -->
+<header class="nav" id="top">
+  <a class="brand" href="#home" aria-label="ReliefSync home">
+    <img src="images/ReliefSync — official logo.png" alt="" width="36" height="36" />
+    <span class="brand__text">Relief<span>Sync</span></span>
+  </a>
+
+  <nav class="nav__links" id="navLinks" aria-label="Main navigation">
+    <a href="#home" class="is-active">Home</a>
+    <a href="#prototype">Our Prototype</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#about">About Us</a>
+    <a href="#contact">Contact Us</a>
+    <a href="#" class="btn btn--green btn--sm nav__cta-mobile">Sign In</a>
+  </nav>
+
+  <a href="#" class="btn btn--green btn--sm nav__cta">Sign In</a>
+
+  <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main>
+
+<!-- =====================================================================
+     1. HERO
+     ===================================================================== -->
+<section class="hero" id="home">
+  <div class="hero__content">
+    <span class="chip chip--green"><i class="dot"></i>No lost record. No duplicate truck.</span>
+
+    <h1 class="hero__title">One system. One response.<br /><span>No one left behind.</span></h1>
+
+    <p class="hero__text">ReliefSync is an offline-first disaster-response coordination platform. Barangay responders record needs on their phones with no signal, sync at the LGU command center, and DRRMO staff validate one shared picture for every response team.</p>
+
+    <div class="hero__buttons">
+      <a href="#contact" class="btn btn--green">Join Us</a>
+      <a href="#video" class="btn btn--outline">Watch the video</a>
+    </div>
+
+    <ul class="modes">
+      <li><svg class="ic"><use href="#i-wifi"/></svg>Regular internet</li>
+      <li><svg class="ic"><use href="#i-sat"/></svg>Satellite-assisted</li>
+      <li><svg class="ic"><use href="#i-wifi-off"/></svg>Fully offline</li>
+    </ul>
+  </div>
+
+  <!-- Hero visual: images are positioned in % so the whole group scales on any screen -->
+  <div class="hero__visual">
+    <div class="hv hv--glow"></div>
+    <img class="hv hv--card"   src="images\Hero_Situation Overview Mock.png" alt="Situation overview dashboard card" />
+    <img class="hv hv--laptop" src="images\Hero_LaptopMock.png"         alt="ReliefSync dashboard on a laptop" />
+    <img class="hv hv--phone"  src="images\Hero_PhoneMock.png"          alt="ReliefSync app on a phone" />
+
+    <div class="hv hv--badge hv--badge-top">
+      <span class="icon-box icon-box--blue"><svg class="ic"><use href="#i-wifi"/></svg></span>
+      <span><strong>Satellite link active</strong><small>Command center online</small></span>
+    </div>
+    <div class="hv hv--badge hv--badge-bottom">
+      <span class="icon-box icon-box--green"><svg class="ic"><use href="#i-shield"/></svg></span>
+      <span><strong>Verified by DRRMO</strong><small>150 × Drinking water merged</small></span>
+    </div>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     2. PROMO VIDEO  ★ VIDEO PLACEHOLDER SECTION ★
+     ---------------------------------------------------------------------
+     HOW TO ADD YOUR VIDEO (3 steps):
+       1. Put your video file inside the  /videos  folder.
+       2. Name it  promo.mp4   (or change the file name in the
+          <source src="..."> line below).
+       3. (Optional) Put a cover image in /images and set it in the
+          poster="" attribute on the <video> tag.
+     That's it. Clicking the play button will show and play your video.
+     ===================================================================== -->
+<section class="section section--alt" id="video">
+  <div class="head head--narrow">
+    <p class="eyebrow">SEE RELIEFSYNC PROMOTIONAL VIDEO</p>
+    <h2 class="title">Watch ReliefSync</h2>
+    <p class="lead">A short video presentation of what ReliefSync Is.</p>
+  </div>
+
+  <!-- 16:9 video frame -->
+  <div class="video-frame" id="videoFrame">
+
+    <!-- ▼▼▼ REAL VIDEO — hidden until the play button is pressed ▼▼▼
+         OPTIONAL cover image: add  poster="images/video-poster.jpg"  inside the <video> tag below. -->
+    <video
+      id="promoVideo"
+      class="video-frame__video"
+      controls
+      playsinline
+      preload="metadata"
+    >
+      <!-- ★ CHANGE THE FILE NAME HERE if your video is named differently ★ -->
+      <source src="videos\SaasMarketingVideo.mp4" type="video/mp4" />
+      <!-- Optional extra formats:
+      <source src="videos/promo.webm" type="video/webm" /> -->
+      Your browser does not support the video tag.
+    </video>
+    <!-- ▲▲▲ END REAL VIDEO ▲▲▲ -->
+
+    <!-- ▼▼▼ PLACEHOLDER / POSTER (from the Figma design) ▼▼▼
+         This overlay hides itself automatically once the video starts playing. -->
+    <div class="video-frame__poster" id="videoPoster">
+      <i class="glow glow--green"></i>
+      <i class="glow glow--blue"></i>
+      <span class="video-frame__label">PROMOTIONAL VIDEO</span>
+
+      <button class="play-btn" id="playBtn" aria-label="Play promotional video">
+        <svg class="ic"><use href="#i-play"/></svg>
+      </button>
+      <p class="video-frame__title">Watch the ReliefSync overview</p>
+      <p class="video-frame__sub"></p>
+
+      <div class="video-frame__bar"><i></i></div>
+    </div>
+    <!-- ▲▲▲ END PLACEHOLDER ▲▲▲ -->
+
+  </div>
+
+  <p class="caption">Prefer to read? <a href="#how-it-works">See how it works <svg class="ic"><use href="#i-arrow"/></svg></a></p>
+</section>
+
+
+<!-- =====================================================================
+     3. LEGAL ALIGNMENT STRIP
+     ===================================================================== -->
+<div class="legal">
+  <span class="legal__label">Built around:</span>
+  <ul class="legal__list">
+    <li>RA 10121 · LGU disaster response</li>
+    <li>PSA PSGC · Geographic codes</li>
+    <li>RA 12009 · New Government Procurement Act</li>
+    <li>RA 10173 · Data Privacy Act</li>
+    <li>SDG 11 · 3 · 9 · 13</li>
+  </ul>
+</div>
+
+
+<!-- =====================================================================
+     4. THE PROBLEM
+     ===================================================================== -->
+<section class="section" id="problem">
+  <div class="head">
+    <p class="eyebrow">THE PROBLEM</p>
+    <h2 class="title">When networks fail, the shared picture fails</h2>
+    <p class="lead">PAGASA reports that about 20 tropical cyclones enter the Philippine Area of Responsibility each year, and 8 or 9 cross the country. Families need food, water, medicine, shelter, transport, and manpower within hours, not days.</p>
+  </div>
+
+  <div class="wrap grid grid--4">
+    <article class="card card--problem">
+      <span class="icon-box icon-box--red"><svg class="ic"><use href="#i-chat"/></svg></span>
+      <h3>Needs arrive by calls, texts, and chat</h3>
+      <p>Requests are scattered and duplicated, with no single list.</p>
+      <hr />
+      <small class="mini-label">HOW RELIEFSYNC RESPONDS</small>
+      <p class="answer">One request list with priority levels and a status from Pending to Delivered.</p>
+    </article>
+
+    <article class="card card--problem">
+      <span class="icon-box icon-box--red"><svg class="ic"><use href="#i-doc"/></svg></span>
+      <h3>Center counts and stock sit on paper</h3>
+      <p>Coordinators cannot see which supplies are running low.</p>
+      <hr />
+      <small class="mini-label">HOW RELIEFSYNC RESPONDS</small>
+      <p class="answer">Center, evacuee, and inventory records with shortage alerts.</p>
+    </article>
+
+    <article class="card card--problem">
+      <span class="icon-box icon-box--red"><svg class="ic"><use href="#i-power"/></svg></span>
+      <h3>Networks and power fail in affected barangays</h3>
+      <p>Reports cannot leave the area.</p>
+      <hr />
+      <small class="mini-label">HOW RELIEFSYNC RESPONDS</small>
+      <p class="answer">Offline recording on phones, synchronized at a command center.</p>
+    </article>
+
+    <article class="card card--problem">
+      <span class="icon-box icon-box--red"><svg class="ic"><use href="#i-users"/></svg></span>
+      <h3>Teams cannot see who covers what</h3>
+      <p>Deliveries are duplicated or missed.</p>
+      <hr />
+      <small class="mini-label">HOW RELIEFSYNC RESPONDS</small>
+      <p class="answer">Volunteer and task assignments visible to all authorized teams.</p>
+    </article>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     5. HOW IT WORKS
+     ===================================================================== -->
+<section class="section section--alt" id="how-it-works">
+  <div class="head">
+    <p class="eyebrow">HOW IT WORKS</p>
+    <h2 class="title">From a cut-off barangay to one verified request list</h2>
+    <p class="lead">A store-carry-forward workflow run by your own DRRMO and barangay responders after training. ReliefSync staff do not enter disaster areas to operate it.</p>
+  </div>
+
+  <div class="wrap steps">
+    <article class="step">
+      <span class="step__num">1</span>
+      <h3>Record</h3>
+      <p class="step__who">Trained barangay DRRM volunteers and center managers</p>
+      <p>Save evacuee counts, requests, inventory, and field reports on phones in offline mode.</p>
+    </article>
+    <article class="step">
+      <span class="step__num">2</span>
+      <h3>Carry</h3>
+      <p class="step__who">Responders assigned by the barangay DRRM committee</p>
+      <p>Bring phones to the LGU mobile command center or the nearest connected point.</p>
+    </article>
+    <article class="step">
+      <span class="step__num">3</span>
+      <h3>Upload</h3>
+      <p class="step__who">DRRMO staff at the command center</p>
+      <p>Connect through the satellite link or restored network and run synchronization.</p>
+    </article>
+    <article class="step">
+      <span class="step__num step__num--green">4</span>
+      <h3>Validate</h3>
+      <p class="step__who">Authorized DRRMO personnel</p>
+      <p>Review duplicates and conflicts the system flags, then confirm or correct them.</p>
+    </article>
+    <article class="step">
+      <span class="step__num step__num--green">5</span>
+      <h3>Coordinate</h3>
+      <p class="step__who">Coordinators, NGOs, volunteer groups</p>
+      <p>View verified requests, accept tasks, and assign volunteers.</p>
+    </article>
+    <article class="step">
+      <span class="step__num step__num--green">6</span>
+      <h3>Close the loop</h3>
+      <p class="step__who">Field recorders</p>
+      <p>Confirm deliveries at the next sync. Requests become Delivered with an activity record.</p>
+    </article>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     6. OUR PROTOTYPE
+     ===================================================================== -->
+<section class="section" id="prototype">
+  <div class="head head--narrow">
+    <p class="eyebrow">OUR PROTOTYPE</p>
+    <h2 class="title">See the prototype, screen by screen</h2>
+    <p class="lead">The prototype demonstrates the core workflow with controlled test data: record, sync, validate, allocate, deliver, and confirm.</p>
+  </div>
+
+  <!-- Big showcase: desktop screenshot + phone screenshot -->
+  <div class="wrap showcase">
+    <img class="showcase__desktop" src="images\Prototype - Image Laptop.png" alt="ReliefSync prototype on desktop" />
+    <img class="showcase__phone"   src="images\Prototype - Image Phone.png"  alt="ReliefSync prototype on mobile" />
+  </div>
+
+  <!-- 4 highlights -->
+  <div class="wrap grid grid--4 highlights">
+    <article class="card card--soft">
+      <span class="icon-box icon-box--white"><svg class="ic"><use href="#i-phone"/></svg></span>
+      <h3>Offline field recording</h3>
+      <p>Record evacuee counts and requests with no signal. Records wait in a visible sync queue.</p>
+    </article>
+    <article class="card card--soft">
+      <span class="icon-box icon-box--white"><svg class="ic"><use href="#i-sync"/></svg></span>
+      <h3>Store-carry-forward sync</h3>
+      <p>Carry the phone to a connected command center. Retried uploads never create duplicate copies.</p>
+    </article>
+    <article class="card card--soft">
+      <span class="icon-box icon-box--white"><svg class="ic"><use href="#i-shield"/></svg></span>
+      <h3>DRRMO validation</h3>
+      <p>Review flagged duplicates and conflicts. Only authorized staff approve official requests.</p>
+    </article>
+    <article class="card card--soft">
+      <span class="icon-box icon-box--white"><svg class="ic"><use href="#i-truck"/></svg></span>
+      <h3>Delivery confirmation</h3>
+      <p>Contributors dispatch; receiving officers confirm actual quantities, including partial deliveries.</p>
+    </article>
+  </div>
+
+  <!-- Screenshot gallery (built with HTML so it stays sharp. Swap with <img> if you prefer real screenshots) -->
+  <div class="wrap gallery">
+    <figure>
+      <div class="shot">  <!-- SCREENSHOT_SLOT_3 - Allocation workspace -->
+        <b>Remaining need: 50 food packs</b>
+        <div class="row"><span>NGO · 100 food packs</span><i class="tag tag--green">Approved</i></div>
+        <div class="row"><span>NGO · 50 hygiene kits</span><i class="tag tag--green">Approved</i></div>
+        <div class="row"><span>Company · 150 water</span><i class="tag tag--green">Approved</i></div>
+        <div class="row"><span>Remaining 50 food packs</span><i class="tag tag--amber">Open</i></div>
+      </div>
+      <figcaption><h3>Allocation workspace</h3><p>Coordinators compare offers against the remaining validated need before approving.</p></figcaption>
+    </figure>
+
+    <figure>
+      <div class="shot">  <!-- SCREENSHOT_SLOT_4 - Receiving confirmation -->
+        <b>Barangay 5 · actual quantities</b>
+        <div class="row"><span>Food packs · 90 of 100</span><i class="tag tag--red">Discrepancy</i></div>
+        <div class="row"><span>Hygiene kits · 50 of 50</span><i class="tag tag--green">Delivered</i></div>
+        <div class="row"><span>Drinking water · 150 of 150</span><i class="tag tag--green">Delivered</i></div>
+        <div class="row"><span>Request status</span><i class="tag tag--amber">Still open</i></div>
+      </div>
+      <figcaption><h3>Receiving confirmation</h3><p>Receiving officers record what actually arrived, so a partial delivery stays visible.</p></figcaption>
+    </figure>
+
+    <figure>
+      <div class="shot">  <!-- SCREENSHOT_SLOT_5 - Partner offer submission -->
+        <b>Shared request: 150 food packs</b>
+        <div class="row"><span>Your offer · 100 packs</span><i class="tag tag--blue">Submitted</i></div>
+        <div class="row"><span>Reserved from stock</span><i class="tag tag--green">100</i></div>
+        <div class="row"><span>Availability</span><i class="tag tag--blue">This week</i></div>
+        <div class="row"><span>Official request</span><i class="tag tag--amber">Read only</i></div>
+      </div>
+      <figcaption><h3>Partner offers</h3><p>NGOs and companies see only requests shared with them and submit offers from their own stock.</p></figcaption>
+    </figure>
+  </div>
+
+  <div class="cta-row">
+    <button type="button" class="btn btn--green" data-open-prototype>Open the prototype demo</button>
+    <a href="#contact" class="btn btn--outline">Contact Us</a>
+  </div>
+</section>
+
+<div class="prototype-modal" id="prototypeModal" aria-hidden="true">
+  <div class="prototype-modal__backdrop" data-close-prototype></div>
+  <div class="prototype-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="prototypeModalTitle">
+    <button type="button" class="prototype-modal__close" aria-label="Close prototype chooser" data-close-prototype>&times;</button>
+    <p class="eyebrow">PROTOTYPE</p>
+    <h3 id="prototypeModalTitle">Choose your demo</h3>
+    <p>Open the ReliefSync prototype in mobile or desktop view.</p>
+    <div class="prototype-modal__actions">
+      <a class="btn btn--green" href="https://www.figma.com/proto/grOZMobAC8oEnnrUAjMbmU/ReliefSync-PROTOTYPE?node-id=440-5039&p=f&t=7Xo1axWttaSCIFfj-0&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=448%3A4313&show-proto-sidebar=1" target="_blank" rel="noreferrer">Open mobile</a>
+      <a class="btn btn--outline" href="https://www.figma.com/proto/grOZMobAC8oEnnrUAjMbmU/ReliefSync-PROTOTYPE?node-id=440-5039&p=f&t=7Xo1axWttaSCIFfj-0&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=448%3A4313&show-proto-sidebar=1" target="_blank" rel="noreferrer">Open desktop</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- =====================================================================
+     7. TYPHOON SCENARIO
+     ===================================================================== -->
+<section class="section section--dark" id="typhoon">
+  <div class="head">
+    <p class="eyebrow eyebrow--light">SEE IT IN A TYPHOON</p>
+    <h2 class="title title--light">One request, from a cut-off center to Delivered</h2>
+    <p class="lead lead--light">A typhoon cuts cellular service across a municipality of 25 barangays. This is how a single request moves through ReliefSync.</p>
+  </div>
+
+  <div class="wrap steps steps--glass">
+    <article class="glass">
+      <div class="glass__top"><span class="icon-box icon-box--navy"><svg class="ic"><use href="#i-building"/></svg></span><b>01</b></div>
+      <h3>Center A reports 150 evacuees</h3>
+      <p>A trained center manager records a request for food packs and drinking water, offline.</p>
+    </article>
+    <article class="glass">
+      <div class="glass__top"><span class="icon-box icon-box--navy"><svg class="ic"><use href="#i-phone"/></svg></span><b>02</b></div>
+      <h3>A responder carries the phone</h3>
+      <p>The barangay responder brings it to the municipal hall, where the DRRMO runs a satellite-connected command center.</p>
+    </article>
+    <article class="glass">
+      <div class="glass__top"><span class="icon-box icon-box--navy"><svg class="ic"><use href="#i-merge"/></svg></span><b>03</b></div>
+      <h3>The DRRMO syncs and validates</h3>
+      <p>The system flags that a barangay official sent the same request. The validator merges the two.</p>
+    </article>
+    <article class="glass">
+      <div class="glass__top"><span class="icon-box icon-box--navy"><svg class="ic"><use href="#i-users"/></svg></span><b>04</b></div>
+      <h3>An NGO accepts the task</h3>
+      <p>An NGO with internet access sees one verified request, accepts it, and assigns a delivery team.</p>
+    </article>
+    <article class="glass">
+      <div class="glass__top"><span class="icon-box icon-box--navy"><svg class="ic"><use href="#i-check-circle"/></svg></span><b>05</b></div>
+      <h3>Delivered, with a record</h3>
+      <p>The center manager confirms receipt. The status moves to Delivered with an activity record.</p>
+    </article>
+  </div>
+
+  <p class="note-light">Without ReliefSync, the same information would travel by radio, text relays, and paper lists and be consolidated by hand.</p>
+</section>
+
+
+<!-- =====================================================================
+     8. CONNECTIVITY MODES
+     ===================================================================== -->
+<section class="section" id="connectivity">
+  <div class="head">
+    <p class="eyebrow">BUILT FOR OUTAGES</p>
+    <h2 class="title">Works on every connection you have, including none</h2>
+    <p class="lead">Satellite is an alternative connection, not a guarantee. It needs equipment, an active service, power, and a clear view of the sky, so offline recording always works without it.</p>
+  </div>
+
+  <div class="wrap conn">
+    <article class="card card--mode">
+      <span class="icon-box icon-box--blue icon-box--lg"><svg class="ic"><use href="#i-wifi"/></svg></span>
+      <h3>Regular internet</h3>
+      <div><small class="mini-label">WHEN IT APPLIES</small><p>Mobile data, Wi-Fi, or wired internet is available.</p></div>
+      <div><small class="mini-label">HOW IT WORKS</small><p>Users access the platform and share updates through the central system in real time.</p></div>
+      <div class="limits"><small>LIMITS</small><p>Depends on local networks and power.</p></div>
+    </article>
+
+    <article class="card card--mode">
+      <span class="icon-box icon-box--periwinkle icon-box--lg"><svg class="ic"><use href="#i-sat"/></svg></span>
+      <h3>Satellite-assisted</h3>
+      <div><small class="mini-label">WHEN IT APPLIES</small><p>Local networks are down, but a command center has satellite equipment.</p></div>
+      <div><small class="mini-label">HOW IT WORKS</small><p>Compatible satellite internet connects the center's local network. Responders use ReliefSync through it without relying on nearby cell towers.</p></div>
+      <div class="limits"><small>LIMITS</small><p>Needs equipment, an active service, power, and a clear view of the sky.</p></div>
+    </article>
+
+    <article class="card card--mode">
+      <span class="icon-box icon-box--green icon-box--lg"><svg class="ic"><use href="#i-wifi-off"/></svg></span>
+      <h3>Offline</h3>
+      <div><small class="mini-label">WHEN IT APPLIES</small><p>No connection of any kind.</p></div>
+      <div><small class="mini-label">HOW IT WORKS</small><p>Supported devices save essential records locally and queue them for synchronization.</p></div>
+      <div class="limits"><small>LIMITS</small><p>Other organizations see records only after sync succeeds. Offline data may be outdated.</p></div>
+    </article>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     9. CORE FEATURES
+     ===================================================================== -->
+<section class="section section--alt" id="features">
+  <div class="head">
+    <p class="eyebrow">CORE FEATURES</p>
+    <h2 class="title">Everything a DRRMO needs, in one system</h2>
+    <p class="lead">Eight capabilities that work together, in whatever connectivity condition your teams face.</p>
+  </div>
+
+  <div class="wrap grid grid--4">
+    <article class="card card--feature"><span class="icon-box icon-box--blue"><svg class="ic"><use href="#i-building"/></svg></span><h3>Evacuation center management</h3><p>Center and evacuee records with minimal data and vulnerable-group counts.</p></article>
+    <article class="card card--feature"><span class="icon-box icon-box--green"><svg class="ic"><use href="#i-box"/></svg></span><h3>Relief inventory ledger</h3><p>Stock stored as additions and deductions, with shortage alerts.</p></article>
+    <article class="card card--feature"><span class="icon-box icon-box--blue"><svg class="ic"><use href="#i-list"/></svg></span><h3>Prioritized requests</h3><p>Community needs reported with priority levels from the field.</p></article>
+    <article class="card card--feature"><span class="icon-box icon-box--green"><svg class="ic"><use href="#i-activity"/></svg></span><h3>Request lifecycle tracking</h3><p>Pending, Assigned, In Transit, Delivered. Forward-only, every change logged.</p></article>
+    <article class="card card--feature"><span class="icon-box icon-box--blue"><svg class="ic"><use href="#i-users"/></svg></span><h3>Volunteer assignments</h3><p>Registration and task tracking visible to all authorized teams.</p></article>
+    <article class="card card--feature"><span class="icon-box icon-box--green"><svg class="ic"><use href="#i-merge"/></svg></span><h3>Duplicate and conflict review</h3><p>The system flags them and an authorized validator resolves them.</p></article>
+    <article class="card card--feature"><span class="icon-box icon-box--blue"><svg class="ic"><use href="#i-dash"/></svg></span><h3>Centralized dashboard</h3><p>One view of centers, stock, requests, and volunteers for each role.</p></article>
+    <article class="card card--feature"><span class="icon-box icon-box--green"><svg class="ic"><use href="#i-lock"/></svg></span><h3>Audit trail and access control</h3><p>Who changed what, when, and from which device. Role-based access.</p></article>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     10. WHO IT SERVES
+     ===================================================================== -->
+<section class="section" id="who">
+  <div class="head">
+    <p class="eyebrow">WHO IT SERVES</p>
+    <h2 class="title">Built for every team in the response</h2>
+    <p class="lead">LGUs and DRRMOs are the primary customers. NGOs and private partners can subscribe for their own workspace, and sponsors can fund a subscription for a beneficiary.</p>
+  </div>
+
+  <div class="wrap grid grid--3">
+    <article class="card card--who"><span class="pill pill--navy">Primary customers</span><h3>LGUs and DRRMOs</h3><p>One dashboard to record, validate, and report. Legally responsible for local disaster preparedness.</p></article>
+    <article class="card card--who"><span class="pill pill--blue">Day-to-day users</span><h3>Response coordinators</h3><p>Verified requests by priority, volunteer board, and stock alerts.</p></article>
+    <article class="card card--who"><span class="pill pill--blue">Day-to-day users</span><h3>Evacuation center managers</h3><p>Headcount, requests, and stock for one center, even offline.</p></article>
+    <article class="card card--who"><span class="pill pill--green">Relief partners</span><h3>NGOs, schools, volunteer groups</h3><p>Accept verified tasks and update deliveries, with no evacuee personal data.</p></article>
+    <article class="card card--who"><span class="pill pill--green">Sponsors</span><h3>CSR sponsors and foundations</h3><p>Fund an existing subscription for a selected beneficiary and receive the agreed funding and impact reports.</p></article>
+    <article class="card card--who"><span class="pill pill--green">Beneficiaries</span><h3>Evacuees and families</h3><p>Never charged. The platform collects only the data a response needs.</p></article>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     11. PRICING
+     ===================================================================== -->
+<section class="section" id="pricing">
+  <div class="head head--narrow">
+    <p class="eyebrow">PRICING</p>
+    <h2 class="title">Four plans, sized to the role you play</h2>
+    <p class="lead">Annual institutional subscriptions for barangays, cities and municipalities, provinces, and private or NGO organizations. Prices are proposed planning figures to be confirmed in the pilot.</p>
+  </div>
+
+  <div class="wrap plans">
+    <article class="plan">
+      <h3>Barangay – Independent</h3>
+      <div class="plan__price"><b class="plan__price--lg">₱24,000</b><span>per year</span></div>
+      <p class="plan__desc">One barangay managing its own records and response workflow.</p>
+      <hr />
+      <ul>
+        <li><svg class="ic"><use href="#i-check"/></svg>Barangay dashboard and local incident records</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Evacuee counts and assistance requests</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Offline-first recording with store-carry-forward sync</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Basic inventory, reports and exports</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Role-based accounts within the contracted allowance</li>
+      </ul>
+      <a href="#contact" class="btn btn--outline btn--block">Talk to us</a>
+    </article>
+
+    <article class="plan plan--featured">
+      <span class="plan__badge">Built for LGUs</span>
+      <h3>City / Municipality</h3>
+      <div class="plan__price"><b>₱210,000–₱450,000+</b><span>per year, indicative</span></div>
+      <p class="plan__desc">Coordinates every barangay in the jurisdiction.</p>
+      <hr />
+      <ul>
+        <li><svg class="ic"><use href="#i-check"/></svg>All covered barangays and evacuation centers</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>DRRMO validation with duplicate and conflict flags</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Partner offers, allocation and delivery tracking</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Jurisdiction dashboard, reports and audit trail</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>One command-center satellite kit and 12 months of service*</li>
+      </ul>
+      <a href="#contact" class="btn btn--green btn--block">Request a quotation</a>
+    </article>
+
+    <article class="plan">
+      <h3>Provincial</h3>
+      <div class="plan__price"><b>₱450,000–₱1,200,000+</b><span>per year, indicative</span></div>
+      <p class="plan__desc">Coordinates participating cities and municipalities.</p>
+      <hr />
+      <ul>
+        <li><svg class="ic"><use href="#i-check"/></svg>Province-wide consolidated dashboard</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Inter-LGU coordination and escalation</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Reports built from authorized shared data</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Each LGU keeps its own workspace and controls sharing</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>One provincial command-center satellite baseline*</li>
+      </ul>
+      <a href="#contact" class="btn btn--outline btn--block">Request a quotation</a>
+    </article>
+
+    <article class="plan">
+      <h3>Private / NGO</h3>
+      <div class="plan__price"><b>₱36,000–₱300,000+</b><span>per year, by capacity</span></div>
+      <p class="plan__desc">An independent workspace for NGOs, foundations, companies, suppliers and logistics partners.</p>
+      <hr />
+      <ul>
+        <li><svg class="ic"><use href="#i-check"/></svg>Own inventory, warehouses and branches</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Submit offers and track accepted allocations</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Dispatch, proof of delivery and discrepancy updates</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Capacity bands: small, growing, large</li>
+      </ul>
+      <a href="#contact" class="btn btn--outline btn--block">Talk to us</a>
+    </article>
+  </div>
+
+  <div class="wrap sponsor">
+    <span class="icon-box icon-box--white icon-box--xl"><svg class="ic"><use href="#i-users"/></svg></span>
+    <div>
+      <h3>Sponsors fund an existing plan. It is not a fifth plan.</h3>
+      <p>A company, foundation, or development partner can pay for any plan above on behalf of a selected beneficiary. The beneficiary keeps control of its workspace and records. The sponsor receives only the funding, utilization, and impact reports agreed in the contract.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     12. PILOT TARGETS
+     ===================================================================== -->
+<section class="section section--alt" id="pilot">
+  <div class="head">
+    <p class="eyebrow">PILOT AND PROOF</p>
+    <h2 class="title">Targets we will test in a pilot</h2>
+    <p class="lead">ReliefSync is an early-stage concept with no commercial traction yet. Its first goal is to prove the field workflow with real users, and to publish the evidence.</p>
+  </div>
+
+  <div class="wrap grid grid--4 stats">
+    <article class="card card--stat"><b class="c-blue">95%+</b><p>target share of offline records synchronized without loss across at least 30 simulated outage cycles</p></article>
+    <article class="card card--stat"><b class="c-green">50%</b><p>target reduction in report-consolidation time against the baseline measured at pilot start</p></article>
+    <article class="card card--stat"><b class="c-navy">3</b><p>target documented partnership commitments from schools, NGOs, or LGUs</p></article>
+    <article class="card card--stat"><b class="c-dkgreen">1</b><p>satellite-assisted synchronization to demonstrate at a command center across 3+ sites and 100+ field records</p></article>
+  </div>
+
+  <div class="wrap roadmap">
+    <h3>12-month roadmap</h3>
+    <div class="roadmap__grid">
+      <div class="rm"><i class="rm__bar"></i><small>MONTHS 1–3</small><h4>Validate</h4><p>10+ interviews with DRRMO officers, barangay officials, schools, and NGOs</p></div>
+      <div class="rm"><i class="rm__bar"></i><small>MONTHS 1–6</small><h4>Build the MVP</h4><p>Dashboard, centers, inventory, requests, volunteers, offline sync</p></div>
+      <div class="rm"><i class="rm__bar"></i><small>MONTHS 7–9</small><h4>Test the prototype</h4><p>30 outage cycles, 95% without loss, every seeded duplicate flagged</p></div>
+      <div class="rm rm--green"><i class="rm__bar"></i><small>MONTHS 10–12</small><h4>Run the pilot</h4><p>One pilot, 3+ sites, 100+ records, one satellite-assisted sync</p></div>
+      <div class="rm rm--green rm--dk"><i class="rm__bar"></i><small>YEAR 2</small><h4>Go to market</h4><p>First paid LGU contracts, analytics, integrations</p></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     13. ABOUT US
+     ===================================================================== -->
+<section class="section section--alt about" id="about">
+  <div class="head">
+    <p class="eyebrow">ABOUT US</p>
+    <h2 class="title">A project team building offline-first disaster coordination</h2>
+    <p class="lead">ReliefSync is a project of Mathew Cretecio, Jerald June Asis, and Paul Adrian Paculanang of Davao del Norte State College, built to help institutions coordinate needs, resources, and deliveries when communication networks are disrupted.</p>
+  </div>
+
+  <div class="wrap about__grid">
+    <article class="card card--about">
+      <h3>Our background</h3>
+      <p>Disaster response often involves many offices, barangays, evacuation centers, NGOs, and private contributors, each keeping separate spreadsheets, paper forms, and messages. When networks and power fail, updated information may never reach the municipal or city DRRMO, and decision-makers work with an incomplete picture.</p>
+      <p>ReliefSync gives these institutions a shared coordination platform that works online and offline, so needs, offers, allocations, and deliveries stay organized and traceable. It does not replace the authority of LGUs or DRRMOs. It supports their coordination with structured digital records.</p>
+    </article>
+
+    <div class="about__side">
+      <article class="vm vm--vision"><small>OUR VISION</small><p>To provide an accessible and reliable disaster-response coordination platform that helps institutions connect community needs with available resources, even when communication networks are disrupted.</p></article>
+      <article class="vm vm--mission"><small>OUR MISSION</small><p>To improve disaster-response coordination through organized information management, offline-capable field reporting, controlled resource sharing, and accountable delivery tracking.</p></article>
+    </div>
+  </div>
+
+  <div class="wrap sub">
+    <h3 class="sub__title">Our objectives</h3>
+    <div class="objectives">
+      <article class="obj"><span>1</span><h4>Centralize</h4><p>One platform for incidents, evacuation data, requests, resources, and deliveries.</p></article>
+      <article class="obj"><span>2</span><h4>Record anywhere</h4><p>Capture essential records online or offline and synchronize them when a connection returns.</p></article>
+      <article class="obj"><span>3</span><h4>Validate with authority</h4><p>Give DRRMO personnel tools to review, validate, and manage official requests.</p></article>
+      <article class="obj"><span>4</span><h4>Connect resources</h4><p>Let NGOs and private partners offer resources, tracked from allocation to confirmed delivery.</p></article>
+      <article class="obj"><span>5</span><h4>Stay accountable</h4><p>Keep an audit trail and reports that help organizations evaluate their response.</p></article>
+    </div>
+  </div>
+
+  <div class="wrap sub">
+    <h3 class="sub__title">Meet the team</h3>
+    <div class="team">
+      <article class="member">
+        <div class="member__photo"><img src="images\Matthew - Image.png" alt="Mathew Cretecio" /></div>   <!-- ★ replace with team photo -->
+        <h4>Mathew Cretecio</h4><b>Project Team Leader</b><p>Davao del Norte State College</p>
+      </article>
+      <article class="member">
+        <div class="member__photo"><img src="images\Paul - Image.png" alt="Paul Adrian Paculanang" /></div>   <!-- ★ replace with team photo -->
+        <h4>Paul Adrian Paculanang</h4><b>Project team member</b><p>Davao del Norte State College</p>
+      </article>
+      <article class="member">
+        <div class="member__photo"><img src="images\Jerald - Image.png" alt="Jerald June Asis" /></div>   <!-- ★ replace with team photo -->
+        <h4>Jerald June Asis</h4><b>Project team member</b><p>Davao del Norte State College</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     14. FAQ  (uses <details>, no JavaScript needed)
+     ===================================================================== -->
+<section class="section" id="faq">
+  <div class="head head--narrow">
+    <p class="eyebrow">FAQ</p>
+    <h2 class="title">Questions we expect to hear</h2>
+  </div>
+
+  <div class="faq">
+    <details open>
+      <summary>Does ReliefSync replace our DRRMO or official systems?<svg class="ic"><use href="#i-down"/></svg></summary>
+      <p>No. ReliefSync supports coordination and documentation. LGUs, DRRMOs, and other legally responsible institutions keep authority over official validation and allocation decisions.</p>
+    </details>
+    <details open>
+      <summary>Does it work without an internet connection?<svg class="ic"><use href="#i-down"/></svg></summary>
+      <p>Yes for recording. Authorized users save essential records on their phones, and the records upload when a connection is available. Other organizations see them only after synchronization succeeds.</p>
+    </details>
+    <details open>
+      <summary>Is Starlink included?<svg class="ic"><use href="#i-down"/></svg></summary>
+      <p>The City / Municipality and Provincial plans include one designated command-center satellite kit and 12 months of service, subject to supplier confirmation. It is not one kit per barangay, and the Barangay and Private / NGO plans do not include it.</p>
+    </details>
+    <details open>
+      <summary>Do sponsors control the beneficiary’s workspace?<svg class="ic"><use href="#i-down"/></svg></summary>
+      <p>No. A sponsor pays for an existing plan on behalf of a beneficiary and receives only the funding, utilization, and impact reports agreed in the contract. The beneficiary keeps control of its records and decisions.</p>
+    </details>
+    <details open>
+      <summary>How is evacuee data protected?<svg class="ic"><use href="#i-down"/></svg></summary>
+      <p>ReliefSync is designed around data minimization, role-based access, and audit trails, following the Data Privacy Act of 2012. Aggregate counts are preferred over identifiable evacuee information.</p>
+    </details>
+  </div>
+</section>
+
+
+<!-- =====================================================================
+     15. CONTACT US
+     ===================================================================== -->
+<section class="section section--alt" id="contact">
+  <div class="wrap contact">
+
+    <div class="contact__info">
+      <p class="eyebrow eyebrow--left">CONTACT US</p>
+      <h2 class="title title--left">Bring ReliefSync to your municipality</h2>
+      <p class="lead lead--left">Tell us about your LGU, NGO, company, or foundation. We can discuss a pilot under a memorandum of agreement, a quotation, or a prototype demonstration.</p>
+
+      <ul class="details">
+        <li>
+          <span class="icon-box icon-box--round"><svg class="ic"><use href="#i-mail"/></svg></span>
+          <div><small>EMAIL</small><a href="mailto:reliefsync0@gmail.com">reliefsync0@gmail.com</a></div>
+        </li>
+        <li>
+          <span class="icon-box icon-box--round"><svg class="ic"><use href="#i-pin"/></svg></span>
+          <div><small>LOCATION</small><span>Panabo City, Davao del Norte, Philippines</span></div>
+        </li>
+      </ul>
+
+      <div class="social">
+        <small>FOLLOW THE PROJECT</small>
+        <div>
+          <a href="#" aria-label="Facebook"><svg class="ic"><use href="#i-fb"/></svg></a>   <!-- ★ add your Facebook link -->
+          <a href="#" aria-label="GitHub"><svg class="ic"><use href="#i-gh"/></svg></a>     <!-- ★ add your GitHub link -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ★ CONTACT FORM: replace the action URL with your real endpoint
+         (for example Formspree: https://formspree.io/f/YOUR_ID) -->
+    <form class="form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <h3>Send us a message</h3>
+
+      <div class="form__row">
+        <label>Full name *<input type="text" name="name" placeholder="Your name" required /></label>
+        <label>Organization<input type="text" name="organization" placeholder="LGU, NGO, company, or foundation" /></label>
+      </div>
+
+      <div class="form__row">
+        <label>Email address *<input type="email" name="email" placeholder="name@organization.com" required /></label>
+        <label>I am a
+          <span class="select">
+            <select name="role">
+              <option value="" selected disabled>Select one</option>
+              <option>LGU / DRRMO representative</option>
+              <option>NGO or volunteer group</option>
+              <option>Company or foundation</option>
+              <option>School or student</option>
+              <option>Other</option>
+            </select>
+            <svg class="ic"><use href="#i-down"/></svg>
+          </span>
+        </label>
+      </div>
+
+      <label>Message *<textarea name="message" rows="5" placeholder="How can we help? Tell us about your coverage area or partnership idea." required></textarea></label>
+
+      <label class="consent">
+        <input type="checkbox" name="consent" required />
+        <span>I agree that ReliefSync may use these details only to reply to my inquiry, in line with the Data Privacy Act of 2012.</span>
+      </label>
+
+      <button type="submit" class="btn btn--green btn--block">Send message <svg class="ic"><use href="#i-send"/></svg></button>
+    </form>
+
+  </div>
+</section>
+
+</main>
+
+
+<!-- =====================================================================
+     FOOTER
+     ===================================================================== -->
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <a class="brand brand--footer" href="#home">
+        <span class="brand__logo"><img src="images\ReliefSync — official logo.png" alt="" width="52" height="52" /></span>
+        <span class="brand__text">Relief<span>Sync</span></span>
+      </a>
+      <p>No lost record. No duplicate truck. An offline-first disaster coordination platform for LGUs, DRRMOs, and relief partners.</p>
+    </div>
+    <div><h4>EXPLORE</h4><a href="#home">Home</a><a href="#prototype">Our Prototype</a><a href="#about">About Us</a><a href="#contact">Contact Us</a></div>
+    <div><h4>PRODUCT</h4><a href="#how-it-works">How it works</a><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
+    <div><h4>TEAM</h4><a href="#about">Mathew Cretecio</a><a href="#about">Jerald June Asis</a><a href="#about">Paul Adrian Paculanang</a></div>
+  </div>
+  <div class="wrap footer__bottom">
+    <p>ReliefSync is an early-stage concept and does not claim commercial traction, guaranteed connectivity in every disaster, or replacement of official emergency-response systems.</p>
+    <b>@2026 ReliefSync. All rights reserved.</b>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
