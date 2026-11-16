@@ -1,12 +1,11 @@
-PUT YOUR PROMO VIDEO HERE
-=========================
-1. Copy your video into this folder and name it:   promo.mp4
-2. Open index.html in the browser – click the play button in the "Watch ReliefSync" section.
+VIDEO CAROUSEL
+==============
+Put video files in this folder. In index.html, update a carousel indicator's
+data-video-src to the file path, and data-video-title to its display title.
 
-Using a different file name? Open index.html, search for "CHANGE THE FILE NAME HERE"
-and edit the  src="videos/promo.mp4"  line.
+Example:
+  data-video-src="videos/My%20Video.mp4"
+  data-video-title="Watch my video"
 
-Tips
- - MP4 (H.264 video + AAC audio) works in every browser.
- - Optional second format: add a promo.webm and uncomment the <source> line for it.
- - Keep it under ~50 MB for fast loading.
+Use MP4 with H.264 video for broad browser support. Large files can take a
+while to load; compress videos for faster page playback.

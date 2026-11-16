@@ -178,10 +178,8 @@ section[id] { scroll-margin-top: 90px; }
 .pill--green { color: var(--green-dark); }
 
 
-/* ---------- 6. VIDEO SECTION (PLACEHOLDER) ----------
-   16:9 frame. The poster (placeholder) sits on top of the <video>.
-   When the play button is clicked, main.js adds the class .is-playing
-   to .video-frame, which hides the poster and shows the video. */
+/* ---------- 6. VIDEO CAROUSEL ---------- */
+.video-carousel { width: min(1040px, 100%); margin-inline: auto; }
 .video-frame { position: relative; width: min(1040px, calc(100% - 40px)); margin-inline: auto; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden; background: linear-gradient(143deg, #0e2244 0%, #0b3f8f 71%); box-shadow: 0 24px 60px rgba(13, 38, 89, .28); }
 
 .video-frame__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; display: none; }
@@ -201,6 +199,16 @@ section[id] { scroll-margin-top: 90px; }
 .video-frame__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 56px; display: flex; align-items: center; padding: 0 28px; background: rgba(0, 0, 0, .28); }
 .video-frame__bar i { flex: 1; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .35); }
 @media (max-width: 640px) { .video-frame { border-radius: 16px; } .video-frame__bar { height: 36px; padding: 0 16px; } }
+
+.video-carousel__controls { display: flex; justify-content: space-between; align-items: center; gap: 16px; width: min(1040px, calc(100% - 40px)); margin: 18px auto 0; }
+.video-carousel__arrow { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: #fff; color: var(--blue-dark); cursor: pointer; font-size: 14px; font-weight: 600; }
+.video-carousel__arrow:hover { background: var(--blue-tint); }
+.video-carousel__arrow .ic { width: 18px; height: 18px; }
+.video-carousel__arrow--previous { transform: rotate(180deg); }
+.video-carousel__indicators { display: flex; align-items: center; gap: 10px; }
+.video-carousel__indicator { width: 10px; height: 10px; padding: 0; border: 0; border-radius: 50%; background: #b7c3d4; cursor: pointer; }
+.video-carousel__indicator[aria-current="true"] { width: 26px; border-radius: 99px; background: var(--green); }
+.video-carousel__status { margin-top: 8px; text-align: center; color: var(--text); font-size: 13px; }
 
 .caption { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 15px; color: var(--text); }
 .caption a { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--blue); }

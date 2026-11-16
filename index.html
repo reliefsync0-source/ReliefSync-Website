@@ -11,13 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <link rel="icon" type="image/png" href="images/ReliefSync — official logo.png" />
-  <link rel="apple-touch-icon" href="images/ReliefSync — official logo.png" />
+  <link rel="icon" type="image/png" href="images\ReliefSync Community Support Logo (1) 3 [Vectorized].png" />
+  <link rel="apple-touch-icon" href="images\ReliefSync Community Support Logo (1) 3 [Vectorized].png" />
 
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-
+  
 <!-- =====================================================================
      ICONS (inline SVG sprite). Used as: <svg class="ic"><use href="#i-wifi"/></svg>
      These are stand-in icons. To use your exact Figma icons, export them
@@ -60,7 +60,7 @@
      ===================================================================== -->
 <header class="nav" id="top">
   <a class="brand" href="#home" aria-label="ReliefSync home">
-    <img src="images/ReliefSync — official logo.png" alt="" width="36" height="36" />
+    <img src="images\ReliefSync Community Support Logo (1) 3 [Vectorized].png" alt="" width="36" height="36" />
     <span class="brand__text">Relief<span>Sync</span></span>
   </a>
 
@@ -126,15 +126,9 @@
 
 
 <!-- =====================================================================
-     2. PROMO VIDEO  ★ VIDEO PLACEHOLDER SECTION ★
-     ---------------------------------------------------------------------
-     HOW TO ADD YOUR VIDEO (3 steps):
-       1. Put your video file inside the  /videos  folder.
-       2. Name it  promo.mp4   (or change the file name in the
-          <source src="..."> line below).
-       3. (Optional) Put a cover image in /images and set it in the
-          poster="" attribute on the <video> tag.
-     That's it. Clicking the play button will show and play your video.
+     2. PROMO VIDEO CAROUSEL
+     Add or replace videos by updating the carousel buttons' data-video-src
+     and data-video-title attributes below.
      ===================================================================== -->
 <section class="section section--alt" id="video">
   <div class="head head--narrow">
@@ -143,43 +137,40 @@
     <p class="lead">A short video presentation of what ReliefSync Is.</p>
   </div>
 
-  <!-- 16:9 video frame -->
-  <div class="video-frame" id="videoFrame">
+  <div class="video-carousel" id="videoCarousel" aria-label="ReliefSync videos">
+    <div class="video-frame" id="videoFrame">
+      <video id="promoVideo" class="video-frame__video" controls playsinline preload="metadata">
+        <source id="promoVideoSource" src="videos/SaasMarketingVideo.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
 
-    <!-- ▼▼▼ REAL VIDEO — hidden until the play button is pressed ▼▼▼
-         OPTIONAL cover image: add  poster="images/video-poster.jpg"  inside the <video> tag below. -->
-    <video
-      id="promoVideo"
-      class="video-frame__video"
-      controls
-      playsinline
-      preload="metadata"
-    >
-      <!-- ★ CHANGE THE FILE NAME HERE if your video is named differently ★ -->
-      <source src="videos\SaasMarketingVideo.mp4" type="video/mp4" />
-      <!-- Optional extra formats:
-      <source src="videos/promo.webm" type="video/webm" /> -->
-      Your browser does not support the video tag.
-    </video>
-    <!-- ▲▲▲ END REAL VIDEO ▲▲▲ -->
-
-    <!-- ▼▼▼ PLACEHOLDER / POSTER (from the Figma design) ▼▼▼
-         This overlay hides itself automatically once the video starts playing. -->
-    <div class="video-frame__poster" id="videoPoster">
-      <i class="glow glow--green"></i>
-      <i class="glow glow--blue"></i>
-      <span class="video-frame__label">PROMOTIONAL VIDEO</span>
-
-      <button class="play-btn" id="playBtn" aria-label="Play promotional video">
-        <svg class="ic"><use href="#i-play"/></svg>
-      </button>
-      <p class="video-frame__title">Watch the ReliefSync overview</p>
-      <p class="video-frame__sub"></p>
-
-      <div class="video-frame__bar"><i></i></div>
+      <div class="video-frame__poster" id="videoPoster">
+        <i class="glow glow--green"></i>
+        <i class="glow glow--blue"></i>
+        <span class="video-frame__label">PROMOTIONAL VIDEO</span>
+        <button class="play-btn" id="playBtn" aria-label="Play promotional video">
+          <svg class="ic"><use href="#i-play"/></svg>
+        </button>
+        <p class="video-frame__title" id="videoTitle">Watch the ReliefSync overview</p>
+        <div class="video-frame__bar"><i></i></div>
+      </div>
     </div>
-    <!-- ▲▲▲ END PLACEHOLDER ▲▲▲ -->
 
+    <div class="video-carousel__controls" aria-label="Video carousel controls">
+      <button class="video-carousel__arrow" type="button" data-video-step="-1" aria-label="Previous video">
+        <svg class="ic video-carousel__arrow--previous"><use href="#i-arrow"/></svg>
+        <span>Previous</span>
+      </button>
+      <div class="video-carousel__indicators" aria-label="Choose a video">
+        <button type="button" class="video-carousel__indicator" data-video-src="videos/SaasMarketingVideo.mp4" data-video-title="Watch the ReliefSync overview" aria-label="Show video 1: ReliefSync overview" aria-current="true"></button>
+        <button type="button" class="video-carousel__indicator" data-video-src="videos/ReliefSync%20_%20Video.mp4" data-video-title="Watch the ReliefSync promo" aria-label="Show video 2: ReliefSync promo"></button>
+      </div>
+      <button class="video-carousel__arrow" type="button" data-video-step="1" aria-label="Next video">
+        <span>Next</span>
+        <svg class="ic"><use href="#i-arrow"/></svg>
+      </button>
+    </div>
+    <p class="video-carousel__status" id="videoStatus" aria-live="polite">Video 1 of 2</p>
   </div>
 
   <p class="caption">Prefer to read? <a href="#how-it-works">See how it works <svg class="ic"><use href="#i-arrow"/></svg></a></p>
@@ -674,15 +665,15 @@
     <div class="team">
       <article class="member">
         <div class="member__photo"><img src="images\Matthew - Image.png" alt="Mathew Cretecio" /></div>   <!-- ★ replace with team photo -->
-        <h4>Mathew Cretecio</h4><b>Project Team Leader</b><p>Davao del Norte State College</p>
+        <h4>Mathew Cretecio</h4><b>Finance and Operations Leadr</b><p>Davao del Norte State College</p>
       </article>
       <article class="member">
         <div class="member__photo"><img src="images\Paul - Image.png" alt="Paul Adrian Paculanang" /></div>   <!-- ★ replace with team photo -->
-        <h4>Paul Adrian Paculanang</h4><b>Project team member</b><p>Davao del Norte State College</p>
+        <h4>Paul Adrian Paculanang</h4><b>Partnership and Research Lead</b><p>Davao del Norte State College</p>
       </article>
       <article class="member">
         <div class="member__photo"><img src="images\Jerald - Image.png" alt="Jerald June Asis" /></div>   <!-- ★ replace with team photo -->
-        <h4>Jerald June Asis</h4><b>Project team member</b><p>Davao del Norte State College</p>
+        <h4>Jerald June Asis</h4><b>Product and Technical Lead</b><p>Davao del Norte State College</p>
       </article>
     </div>
   </div>
@@ -804,7 +795,7 @@
   <div class="wrap footer__grid">
     <div class="footer__brand">
       <a class="brand brand--footer" href="#home">
-        <span class="brand__logo"><img src="images\ReliefSync — official logo.png" alt="" width="52" height="52" /></span>
+        <span class="brand__logo"><img src="images\ReliefSync Community Support Logo (1) 3 [Vectorized].png" alt="" width="52" height="52" /></span>
         <span class="brand__text">Relief<span>Sync</span></span>
       </a>
       <p>No lost record. No duplicate truck. An offline-first disaster coordination platform for LGUs, DRRMOs, and relief partners.</p>

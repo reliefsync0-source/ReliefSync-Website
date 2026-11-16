@@ -1,7 +1,7 @@
 /* =========================================================================
    ReliefSync – main.js
    1. Mobile menu
-   2. Promo video (placeholder -> real video)
+   2. Promo video carousel
    3. Highlight the current section in the navigation
    ========================================================================= */
 
@@ -24,19 +24,34 @@ document.querySelectorAll('#navLinks a').forEach((link) => {
 });
 
 
-/* ---------- 2. PROMO VIDEO ----------
-   The page shows a placeholder (poster) first. When you press play:
-     - the placeholder hides
-     - the <video> shows and starts playing
-   If the video file is missing (not uploaded yet), the placeholder
-   stays visible and a note is written to the browser console. */
+/* ---------- 2. PROMO VIDEO CAROUSEL ---------- */
 const videoFrame  = document.getElementById('videoFrame');
 const promoVideo  = document.getElementById('promoVideo');
+const promoVideoSource = document.getElementById('promoVideoSource');
 const playBtn     = document.getElementById('playBtn');
 const videoPoster = document.getElementById('videoPoster');
+const videoTitle  = document.getElementById('videoTitle');
+const videoStatus = document.getElementById('videoStatus');
+const videoIndicators = [...document.querySelectorAll('.video-carousel__indicator')];
+let activeVideoIndex = 0;
 
 function showPlaceholder() {
   videoFrame.classList.remove('is-playing');
+}
+
+function showVideo(index) {
+  activeVideoIndex = (index + videoIndicators.length) % videoIndicators.length;
+  const indicator = videoIndicators[activeVideoIndex];
+  promoVideo.pause();
+  showPlaceholder();
+  promoVideoSource.src = indicator.dataset.videoSrc;
+  videoTitle.textContent = indicator.dataset.videoTitle;
+  videoStatus.textContent = `Video ${activeVideoIndex + 1} of ${videoIndicators.length}`;
+  videoIndicators.forEach((button, buttonIndex) => {
+    if (buttonIndex === activeVideoIndex) button.setAttribute('aria-current', 'true');
+    else button.removeAttribute('aria-current');
+  });
+  promoVideo.load();
 }
 
 playBtn.addEventListener('click', () => {
@@ -52,14 +67,25 @@ videoPoster.addEventListener('click', (e) => {
   if (e.target !== playBtn && !playBtn.contains(e.target)) playBtn.click();
 });
 
-// Video file not found / unsupported -> go back to the placeholder
-promoVideo.querySelector('source').addEventListener('error', () => {
-  console.warn('[ReliefSync] Video not found. Add your file to /videos/promo.mp4 (or edit the <source> in index.html).');
+// A source switch can abort an in-flight request; only report actual load errors.
+promoVideo.addEventListener('error', () => {
+  if (promoVideo.error && promoVideo.error.code === 1) return;
+  console.warn(`[ReliefSync] Unable to load video: ${promoVideoSource.src}`);
   showPlaceholder();
 });
 
 // Optional: when the video ends, show the poster again
 promoVideo.addEventListener('ended', showPlaceholder);
+
+videoIndicators.forEach((button, index) => {
+  button.addEventListener('click', () => showVideo(index));
+});
+
+document.querySelectorAll('[data-video-step]').forEach((button) => {
+  button.addEventListener('click', () => {
+    showVideo(activeVideoIndex + Number(button.dataset.videoStep));
+  });
+});
 
 // "Watch the video" button in the hero jumps to the section (handled by the #video link).
 
