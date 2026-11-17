@@ -124,8 +124,51 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+/* ---------- 4. SIGN-IN DIALOG ---------- */
+const loginDialog = document.getElementById('loginDialog');
+const loginTriggers = document.querySelectorAll('[data-open-login]');
+const loginCloseButtons = document.querySelectorAll('[data-close-login]');
+const loginForm = document.querySelector('.login-form');
+const passwordInput = document.getElementById('loginPassword');
+const passwordToggle = document.querySelector('[data-toggle-password]');
 
-/* ---------- 4. ACTIVE NAV LINK ---------- */
+loginTriggers.forEach((trigger) => {
+  trigger.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (loginDialog && !loginDialog.open) loginDialog.showModal();
+  });
+});
+
+loginCloseButtons.forEach((button) => {
+  button.addEventListener('click', () => loginDialog?.close());
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && loginDialog?.open) loginDialog.close();
+});
+
+loginDialog?.addEventListener('click', (event) => {
+  if (event.target === loginDialog) loginDialog.close();
+});
+
+loginForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
+});
+
+passwordToggle?.addEventListener('click', () => {
+  if (!passwordInput) return;
+  const isVisible = passwordInput.type === 'text';
+  passwordInput.type = isVisible ? 'password' : 'text';
+  passwordToggle.setAttribute('aria-pressed', String(!isVisible));
+  passwordToggle.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
+});
+
+document.querySelectorAll('[data-demo-link]').forEach((link) => {
+  link.addEventListener('click', (event) => event.preventDefault());
+});
+
+
+/* ---------- 5. ACTIVE NAV LINK ---------- */
 const sectionIds = ['home', 'prototype', 'how-it-works', 'pricing', 'about', 'contact'];
 const navLinks   = [...document.querySelectorAll('#navLinks a[href^="#"]')];
 
